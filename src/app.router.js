@@ -16,33 +16,33 @@ export const appRouter = (app, express) => {
   }
 
   //************** CORS Policy ****************//
-  const whiteList = ["http://127.0.0.1:3000", "undefined"];
+  // const whiteList = ["http://127.0.0.1:3000"];
 
-  app.use((req, res, next) => {
-    // prints the address who try to access the server
-    console.log("header-origin", req.header("origin"));
+  // app.use((req, res, next) => {
+  //   // prints the address who try to access the server
+  //   console.log("header-origin", req.header("origin"));
 
-    // activate account api (endPoint)
-    if (req.originalUrl.includes("/auth/confirmEmail")) {
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      res.setHeader("Access-Control-Allow-Methods", "GET");
-      return next();
-    }
+  //   // activate account api (endPoint)
+  //   if (req.originalUrl.includes("/auth/confirmEmail")) {
+  //     res.setHeader("Access-Control-Allow-Origin", "*");
+  //     res.setHeader("Access-Control-Allow-Methods", "GET");
+  //     return next();
+  //   }
 
-    if (!whiteList.includes(req.header("origin"))) {
-      return next(new Error("Blocked By CORS Policy!"));
-    }
+  //   if (!whiteList.includes(req.header("origin"))) {
+  //     return next(new Error("Blocked By CORS Policy!"));
+  //   }
 
-    // * will be in whiteList >> passed condition
-    res.setHeader("Access-Control-Allow-Origin", "*"); // origins (urls)
-    res.setHeader("Access-Control-Allow-Headers", "*"); // Headers (like content-type ....)
-    res.setHeader("Access-Control-Allow-Methods", "*"); // Methods (like get/ post/...)
-    res.setHeader("Access-Control-Allow-Private-Network", true);
-    return next();
-  });
+  //   // * will be in whiteList >> passed condition
+  //   res.setHeader("Access-Control-Allow-Origin", "*"); // origins (urls)
+  //   res.setHeader("Access-Control-Allow-Headers", "*"); // Headers (like content-type ....)
+  //   res.setHeader("Access-Control-Allow-Methods", "*"); // Methods (like get/ post/...)
+  //   res.setHeader("Access-Control-Allow-Private-Network", true);
+  //   return next();
+  // });
 
   // cors package
-  // app.use(cors());
+  app.use(cors());
 
   // Global middleware
   app.use(express.json());
