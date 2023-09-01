@@ -158,6 +158,7 @@ export const createOrder = asyncHandler(async (req, res, next) => {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
+      metadata: { order_id: order._id.toString() }, // to get that data at webhook (event triggered)
       success_url: process.env.SUCCESS_URL,
       cancel_url: process.env.CANCEL_URL,
       line_items: order.products.map((product) => {
@@ -173,11 +174,12 @@ export const createOrder = asyncHandler(async (req, res, next) => {
           quantity: product.quantity,
         };
       }),
-      discounts: checkCoupon? [{ coupon: generateCoupon.id }]: [],
+      discounts: checkCoupon ? [{ coupon: generateCoupon.id }] : [],
       // ...(checkCoupon && { discounts: [{ coupon: generateCoupon.id }] }), // only if coupon exists (error)
     });
 
-    return res.json({
+    // response
+    return res.status(201).json({
       success: true,
       message: "Order placed successfully! check your email",
       payUrl: session.url,
@@ -185,7 +187,7 @@ export const createOrder = asyncHandler(async (req, res, next) => {
   }
 
   // send response
-  return res.json({
+  return res.status(201).json({
     success: true,
     message: "Order placed successfully! check your email",
   });
@@ -212,4 +214,44 @@ export const cancelOrder = asyncHandler(async (req, res, next) => {
 
   // send response
   return res.json({ success: true, message: "order canceled successfully!" });
+});
+
+export const orderWebhook = asyncHandler(async (req, res, next) => {
+  // This is your Stripe CLI webhook secret for testing your endpoint locally.
+  const sig = request.headers["stripe-signature"];
+  let event;
+  const stripe = new Stripe(process.env.STRIPE_KEY);
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      request.body,
+      sig,
+      process.env.ENDPOINT_SECRET
+    );
+  } catch (err) {
+    response.status(400).send(`Webhook Error: ${err.message}`);
+    return;
+  }
+
+  // Handle the complete event (you can handle the other events)
+  const orderId = event.data.object.metadata.order_id;
+
+  if (event.type === "checkout.session.completed") {
+    // change order status
+    await orderModel.findOneAndUpdate(
+      { _id: orderId },
+      { status: "visa payed" }
+    );
+    return;
+  }
+
+  // else
+  await orderModel.findOneAndUpdate(
+    { _id: orderId },
+    { status: "failed to pay" }
+  );
+  return;
+
+  // Return a 200 response to acknowledge receipt of the event
+  response.send();
 });
