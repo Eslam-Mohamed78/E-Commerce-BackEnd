@@ -44,8 +44,15 @@ export const appRouter = (app, express) => {
   // cors package
   app.use(cors());
 
-  // Global middleware
-  app.use(express.json());
+  //************** Global middleware ****************//
+  // parsing all data except for webhook endpoint
+  // needed to be buffered (as it comes just don't parse it)
+  app.use((req, res, next) => {
+    if (req.originalUrl.includes("/order/webhook")) {
+      return next();
+    }
+    express.json()(req, res, next);
+  });
 
   // Routes
   app.use("/auth", authRouter);
