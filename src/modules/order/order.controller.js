@@ -84,7 +84,13 @@ export const createOrder = asyncHandler(async (req, res, next) => {
     },
   });
 
-  // generate invoice
+  //************** generate invoice **************//
+  // check invoice folder existence
+  const invoicesPath = path.join(__dirname, `./../../../invoiceTemporary`);
+  if (!fs.existsSync(invoicesPath)) {
+    fs.mkdirSync(invoicesPath, { recursive: true });
+  }
+
   const invoice = {
     shipping: {
       name: user.userName,
