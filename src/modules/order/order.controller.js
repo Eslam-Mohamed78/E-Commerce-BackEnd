@@ -108,7 +108,8 @@ export const createOrder = asyncHandler(async (req, res, next) => {
 
   const pdfPath = path.join(
     __dirname,
-    `./../../../invoiceTemporary/${order._id}.pdf`
+    // `./../../../invoiceTemporary/${order._id}.pdf`
+    `./../../../tmp/${order._id}.pdf` 
   );
 
   createInvoice(invoice, pdfPath);
@@ -124,7 +125,7 @@ export const createOrder = asyncHandler(async (req, res, next) => {
   await order.save();
 
   // delete invoice from filesystem
-  // fs.unlinkSync(pdfPath);
+  fs.unlinkSync(pdfPath);
 
   // send email
   const isSent = await sendEmail({
