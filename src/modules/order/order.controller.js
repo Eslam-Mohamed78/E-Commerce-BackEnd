@@ -85,11 +85,11 @@ export const createOrder = asyncHandler(async (req, res, next) => {
   });
 
   //************** generate invoice **************//
-  // check invoice folder existence
-  const invoicesPath = path.join(__dirname, `./../../../invoiceTemporary`);
-  if (!fs.existsSync(invoicesPath)) {
-    fs.mkdirSync(invoicesPath, { recursive: true });
-  }
+  // // check invoice folder existence
+  // const invoicesPath = path.join(__dirname, `./../../../invoiceTemporary`);
+  // if (!fs.existsSync(invoicesPath)) {
+  //   fs.mkdirSync(invoicesPath, { recursive: true });
+  // }
 
   const invoice = {
     shipping: {
@@ -124,7 +124,7 @@ export const createOrder = asyncHandler(async (req, res, next) => {
   await order.save();
 
   // delete invoice from filesystem
-  fs.unlinkSync(pdfPath);
+  // fs.unlinkSync(pdfPath);
 
   // send email
   const isSent = await sendEmail({
