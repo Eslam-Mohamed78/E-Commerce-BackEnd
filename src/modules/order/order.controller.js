@@ -106,11 +106,10 @@ export const createOrder = asyncHandler(async (req, res, next) => {
   console.log("price", order.price);
   console.log("final price", order.finalPrice);
 
-  const pdfPath = path.join(
-    __dirname,
-    // `./../../../invoiceTemporary/${order._id}.pdf`
-    `./../../../tmp/${order._id}.pdf` 
-  );
+  const pdfPath =
+    process.env.NODE_ENV === "dev"
+      ? path.join(__dirname, `./../../../tmpInvoices/${order._id}.pdf`)
+      : `/tmp/${order._id}.pdf`;
 
   createInvoice(invoice, pdfPath);
 
