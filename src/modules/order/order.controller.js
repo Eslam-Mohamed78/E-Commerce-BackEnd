@@ -26,7 +26,6 @@ export const createOrder = asyncHandler(async (req, res, next) => {
       name: coupon,
       expiredAt: { $gt: Date.now() },
     });
-    console.log("check coupon", checkCoupon);
 
     if (!checkCoupon) return next(new Error("Invalid coupon!"));
   }
