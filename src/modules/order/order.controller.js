@@ -241,7 +241,7 @@ export const orderWebhook = asyncHandler(async (request, response) => {
       { _id: orderId },
       { status: "visa payed" }
     );
-    return;
+    return response.send();
   }
 
   // else
@@ -249,8 +249,5 @@ export const orderWebhook = asyncHandler(async (request, response) => {
     { _id: orderId },
     { status: "failed to pay" }
   );
-  return;
-
-  // Return a 200 response to acknowledge receipt of the event
-  response.send();
+  return response.send();
 });
