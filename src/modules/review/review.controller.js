@@ -7,6 +7,10 @@ export const addReview = asyncHandler(async (req, res, next) => {
   const { content, productId } = req.body;
   const userId = req.user._id;
 
+  // check product existence
+  if (!(await productModel.findById(productId)))
+    return next(new Error("Product not found!", { cause: 404 }));
+
   // add review to model
   const review = await reviewModel.create({
     content,
