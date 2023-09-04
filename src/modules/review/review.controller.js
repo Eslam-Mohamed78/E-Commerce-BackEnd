@@ -1,5 +1,5 @@
 import productModel from "../../../DB/models/product.model.js";
-import reviewModel from "../../../DB/models/reviews.model.js";
+import reviewModel from "../../../DB/models/review.model.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 
 export const addReview = asyncHandler(async (req, res, next) => {
