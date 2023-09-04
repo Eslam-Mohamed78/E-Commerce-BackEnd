@@ -14,9 +14,12 @@ export const addReview = asyncHandler(async (req, res, next) => {
   });
 
   // add review to product
-  const product = await productModel.findOneAndUpdate(productId, {
-    $push: { reviews: { reviewId: review._id } },
-  });
+  const product = await productModel.findOneAndUpdate(
+    { productId },
+    {
+      $push: { reviews: { reviewId: review._id } },
+    }
+  );
 
   // send response
   return res.json({ success: true, message: "Review added successfully!" });
