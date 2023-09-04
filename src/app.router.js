@@ -6,6 +6,7 @@ import productRouter from "./modules/product/product.router.js";
 import couponRouter from "./modules/coupon/coupon.router.js";
 import cartRouter from "./modules/cart/cart.router.js";
 import orderRouter from "./modules/order/order.router.js";
+import reviewRouter from "./modules/review/review.router.js";
 import morgan from "morgan";
 import cors from "cors";
 
@@ -70,6 +71,8 @@ export const appRouter = (app, express) => {
   app.use("/cart", cartRouter);
 
   app.use("/order", orderRouter);
+
+  app.use("/review", reviewRouter)
 
   // for all methods if the input path not equal any of previous.
   app.all("*", (req, res, next) => {
